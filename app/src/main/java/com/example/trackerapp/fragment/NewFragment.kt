@@ -46,7 +46,6 @@ class NewFragment : Fragment() {
                     newList.add(i)
                 }
             }
-
         } else {
             for (i in list){
                 if (i.type == BAD_HABIT){

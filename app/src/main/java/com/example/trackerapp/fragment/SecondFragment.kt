@@ -8,19 +8,23 @@ import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
-import com.example.trackerapp.Habit
-import com.example.trackerapp.R
+import com.example.trackerapp.*
 import com.example.trackerapp.databinding.FragmentSecondBinding
 
 class SecondFragment: Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: SecondViewModel
     private var name: String = HABIT
     private var description: String = DESCRIPTION
     private var priority: String = HIGH
     private var type: String = GOOD_HABIT
     private var quantity: Int = 0
     private var periodicity: Int = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,9 +84,9 @@ class SecondFragment: Fragment() {
                 sendResult(item, position, binding.spinner)
             }
         }
-        cancelButton.setOnClickListener {
-            sendResult(item, -2, binding.spinner)
-        }
+//        cancelButton.setOnClickListener {
+//            sendResult(item, -2, binding.spinner)
+//        }
     }
 
     override fun onDestroyView() {
@@ -110,7 +114,8 @@ class SecondFragment: Fragment() {
             habit.periodicity = text.toInt()
         }
         habit.type = type
-        setFragmentResult(REQUEST_KEY, bundleOf(HABIT to habit, POSITION to position))
+//        setFragmentResult(REQUEST_KEY, bundleOf(HABIT to habit, POSITION to position))
+        viewModel = SecondViewModel(Singleton, position, habit)
         activity?.onBackPressed()
     }
 

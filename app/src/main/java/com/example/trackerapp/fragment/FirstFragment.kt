@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Observer
+import com.example.trackerapp.FirstViewModel
 import com.example.trackerapp.Habit
 import com.example.trackerapp.R
+import com.example.trackerapp.Singleton
 import com.example.trackerapp.adapter.ViewAdapter
 import com.example.trackerapp.databinding.FragmentFirstBinding
 import com.google.android.material.tabs.TabLayout
@@ -17,6 +20,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 class FirstFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: FirstViewModel
     private lateinit var viewAdapter: ViewAdapter
     private var habits: ArrayList<Habit> = arrayListOf()
 
@@ -27,23 +31,7 @@ class FirstFragment : Fragment() {
                 habits = getSerializable(LIST) as ArrayList<Habit>
             }
         }
-        setFragmentResultListener(REQUEST_KEY) { requestKey, bundle ->
-            val pos = bundle.getInt(POSITION)
-            if (pos == -1 ) {
-                val item = bundle.getSerializable(HABIT) as Habit
-                habits.add(item)
-            }
-            if (pos > 1 ) {
-                val item = bundle.getSerializable(HABIT) as Habit
-                habits[pos] = item
-            }
-            if (pos == -2) {
-                run {
-                    val toast = Toast.makeText(requireContext(), TOAST, Toast.LENGTH_LONG)
-                    toast.show()
-                }
-            }
-        }
+        viewModel = FirstViewModel(Singleton)
     }
 
     override fun onCreateView(
@@ -57,6 +45,9 @@ class FirstFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.habitList.observe(viewLifecycleOwner, Observer { habitList ->
+            habits = habitList as ArrayList<Habit>
+        })
         viewAdapter = ViewAdapter(this, habits)
         binding.viewPager.adapter = viewAdapter
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
@@ -78,16 +69,16 @@ class FirstFragment : Fragment() {
         _binding = null
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(LIST, habits)
+        super.onSaveInstanceState(outState)
+    }
+
     fun commitTransaction(item: Habit, position: Int) {
         val secondFragment: Fragment = SecondFragment.newInstance(item, position)
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, secondFragment)
             .addToBackStack(null).commit()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(LIST, habits)
-        super.onSaveInstanceState(outState)
     }
 
     companion object {
