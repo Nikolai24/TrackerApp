@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/nameHabit"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:textSize="20sp"
@@ -34,10 +34,10 @@
             android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name"/>
+            app:layout_constraintTop_toBottomOf="@id/nameHabit"/>
 
         <Spinner
-            android:id="@+id/priorities_spinner"
+            android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -48,7 +48,7 @@
             app:layout_constraintTop_toBottomOf="@id/description"/>
 
         <RadioGroup
-            android:id="@+id/radios"
+            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -57,17 +57,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/priorities_spinner">
+            app:layout_constraintTop_toBottomOf="@id/spinner">
 
             <RadioButton
-                android:id="@+id/good_habit"
+                android:id="@+id/radioButtonGood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/good_habit" />
 
             <RadioButton
-                android:id="@+id/bad_habit"
+                android:id="@+id/radioButtonBad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/bad_habit" />
@@ -85,7 +85,7 @@
             android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radios" />
+            app:layout_constraintTop_toBottomOf="@id/radioGroup" />
 
         <EditText
             android:id="@+id/periodicity"

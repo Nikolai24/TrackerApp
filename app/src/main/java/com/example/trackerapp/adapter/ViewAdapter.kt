@@ -21,7 +21,7 @@ class ViewAdapter(fragment: Fragment, newList: ArrayList<Habit>) : FragmentState
         return fragment
     }
     companion object {
-        private const val ARG_OBJECT = "object"
-        private const val ARRAY_LIST = "array list"
+        private const val ARG_OBJECT = "Object"
+        private const val ARRAY_LIST = "Array list"
     }
 }
