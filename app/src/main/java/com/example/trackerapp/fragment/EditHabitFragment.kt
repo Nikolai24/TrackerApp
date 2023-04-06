@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import com.example.trackerapp.*
 import com.example.trackerapp.databinding.FragmentSecondBinding
 
-class SecondFragment: Fragment() {
+class EditHabitFragment: Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: SecondViewModel
@@ -21,6 +19,7 @@ class SecondFragment: Fragment() {
     private var type: String = GOOD_HABIT
     private var quantity: Int = 0
     private var periodicity: Int = 0
+    var oldType = GOOD_HABIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +58,7 @@ class SecondFragment: Fragment() {
         if (position == -1){
             item = Habit(name, description, priority, type, quantity, periodicity)
             saveButton.setOnClickListener {
-                sendResult(item, -1, binding.spinner)
+                saveHabit(item, -1, binding.spinner)
             }
         }
         if (position > -1){
@@ -70,9 +69,11 @@ class SecondFragment: Fragment() {
             if (item.type == GOOD_HABIT){
                 binding.radioGroup.check(R.id.radioButtonGood)
                 type = GOOD_HABIT
+                oldType = GOOD_HABIT
             } else {
                 binding.radioGroup.check(R.id.radioButtonBad)
                 type = BAD_HABIT
+                oldType = BAD_HABIT
             }
             if (item.priority == MEDIUM){
                 binding.spinner.setSelection(1)
@@ -81,7 +82,7 @@ class SecondFragment: Fragment() {
                 binding.spinner.setSelection(2)
             }
             saveButton.setOnClickListener {
-                sendResult(item, position, binding.spinner)
+                saveHabit(item, position, binding.spinner)
             }
         }
 //        cancelButton.setOnClickListener {
@@ -94,7 +95,7 @@ class SecondFragment: Fragment() {
         _binding = null
     }
 
-    private fun sendResult(habit: Habit, position: Int, spinner: Spinner) {
+    private fun saveHabit(habit: Habit, position: Int, spinner: Spinner) {
         priority = spinner.selectedItem.toString()
         habit.priority = priority
         var text = binding.nameHabit.text.toString()
@@ -115,14 +116,14 @@ class SecondFragment: Fragment() {
         }
         habit.type = type
 //        setFragmentResult(REQUEST_KEY, bundleOf(HABIT to habit, POSITION to position))
-        viewModel = SecondViewModel(Singleton, position, habit)
+        viewModel = SecondViewModel(Singleton, position, habit, oldType)
         activity?.onBackPressed()
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(item: Habit, position: Int): SecondFragment {
-            val fragment = SecondFragment()
+        fun newInstance(item: Habit, position: Int): EditHabitFragment {
+            val fragment = EditHabitFragment()
             val args = Bundle()
             args.putSerializable(HABIT, item)
             args.putInt(POSITION, position)

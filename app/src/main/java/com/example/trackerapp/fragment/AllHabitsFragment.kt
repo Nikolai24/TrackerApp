@@ -5,20 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import com.example.trackerapp.FirstViewModel
 import com.example.trackerapp.Habit
 import com.example.trackerapp.R
-import com.example.trackerapp.Singleton
 import com.example.trackerapp.adapter.ViewAdapter
 import com.example.trackerapp.databinding.FragmentFirstBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class FirstFragment : Fragment() {
+class AllHabitsFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: FirstViewModel
     private lateinit var viewAdapter: ViewAdapter
     private var habits: ArrayList<Habit> = arrayListOf()
 
@@ -29,7 +25,6 @@ class FirstFragment : Fragment() {
                 habits = getSerializable(LIST) as ArrayList<Habit>
             }
         }
-        viewModel = FirstViewModel(Singleton)
     }
 
     override fun onCreateView(
@@ -43,10 +38,7 @@ class FirstFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.habitList.observe(viewLifecycleOwner, Observer { habitList ->
-            habits = habitList as ArrayList<Habit>
-        })
-        viewAdapter = ViewAdapter(this, habits)
+        viewAdapter = ViewAdapter(this)
         binding.viewPager.adapter = viewAdapter
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
         TabLayoutMediator(tabLayout, binding.viewPager) { tab, position ->
@@ -59,6 +51,10 @@ class FirstFragment : Fragment() {
             val habit = Habit()
             val position = -1
             commitTransaction(habit, position)
+        }
+        val bottomSheetFragment = BottomSheetFragment()
+        binding.filter.setOnClickListener {
+            bottomSheetFragment.show(parentFragmentManager, "BottomSheetDialog")
         }
     }
 
@@ -73,16 +69,16 @@ class FirstFragment : Fragment() {
     }
 
     fun commitTransaction(item: Habit, position: Int) {
-        val secondFragment: Fragment = SecondFragment.newInstance(item, position)
+        val editHabitFragment: Fragment = EditHabitFragment.newInstance(item, position)
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, secondFragment)
+            .replace(R.id.fragment_container, editHabitFragment)
             .addToBackStack(null).commit()
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(): FirstFragment {
-            val fragment = FirstFragment()
+        fun newInstance(): AllHabitsFragment {
+            val fragment = AllHabitsFragment()
             val args = Bundle()
             fragment.arguments = args
             return fragment

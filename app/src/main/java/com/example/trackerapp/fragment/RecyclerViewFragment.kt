@@ -5,23 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.trackerapp.FirstViewModel
 import com.example.trackerapp.Habit
 import com.example.trackerapp.R
+import com.example.trackerapp.Singleton
 import com.example.trackerapp.adapter.DataAdapter
 import com.example.trackerapp.databinding.FragmentNewBinding
 
-class NewFragment : Fragment() {
+class RecyclerViewFragment : Fragment() {
     private var _binding: FragmentNewBinding? = null
     private val binding get() = _binding!!
     private lateinit var dataAdapter: DataAdapter
-    private var list: ArrayList<Habit> = arrayListOf()
     private var num = 0
+    private lateinit var viewModel: FirstViewModel
 
     private val listener: DataAdapter.OnItemClickListener = object: DataAdapter.OnItemClickListener{
         override fun onItemClick(item: Habit, position: Int) {
             commitTransaction(item, position)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = FirstViewModel(Singleton)
     }
 
     override fun onCreateView(
@@ -37,27 +45,25 @@ class NewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             num = getInt(ARG_OBJECT)
-            list = getSerializable(ARRAY_LIST) as ArrayList<Habit>
         }
-        var newList: ArrayList<Habit> = arrayListOf()
         if (num == 0){
-            for (i in list){
-                if (i.type == GOOD_HABIT){
-                    newList.add(i)
-                }
-            }
+            viewModel.goodList.observe(viewLifecycleOwner, Observer { goodList ->
+                dataAdapter = DataAdapter(goodList as ArrayList<Habit>, listener)
+                binding.recyclerView.adapter = dataAdapter
+            })
         } else {
-            for (i in list){
-                if (i.type == BAD_HABIT){
-                    newList.add(i)
-                }
-            }
+            viewModel.badList.observe(viewLifecycleOwner, Observer { badList ->
+                dataAdapter = DataAdapter(badList as ArrayList<Habit>, listener)
+                binding.recyclerView.adapter = dataAdapter
+            })
         }
-        dataAdapter = DataAdapter(newList, listener)
-        binding.recyclerView.adapter = dataAdapter
         val lManager =
             StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         binding.recyclerView.apply { layoutManager = lManager }
+    }
+
+    fun setNewList(){
+        dataAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {
@@ -66,9 +72,9 @@ class NewFragment : Fragment() {
     }
 
     fun commitTransaction(item: Habit, position: Int) {
-        val secondFragment: Fragment = SecondFragment.newInstance(item, position)
+        val editHabitFragment: Fragment = EditHabitFragment.newInstance(item, position)
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.fragment_container, secondFragment)
+            ?.replace(R.id.fragment_container, editHabitFragment)
             ?.addToBackStack(null)?.commit()
     }
     companion object {

@@ -9,5 +9,6 @@ data class Habit(
     var type: String? = null,
     var quantity: Int? = null,
     var periodicity: Int? = null,
-    var color: Int? = null
+    var color: Int? = null,
+    var id: Int? = null
 ): Serializable

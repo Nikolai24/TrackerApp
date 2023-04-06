@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.trackerapp.R
 
-class AboutFragment: Fragment() {
+class InfoFragment: Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
