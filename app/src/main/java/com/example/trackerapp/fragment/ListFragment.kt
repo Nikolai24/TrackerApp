@@ -18,7 +18,7 @@ class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
     private lateinit var dataAdapter: DataAdapter
-    private var num = 0
+    private var typeHabit = 0
     private lateinit var viewModel: FirstViewModel
 
     private val listener: DataAdapter.OnItemClickListener = object: DataAdapter.OnItemClickListener{
@@ -44,9 +44,9 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            num = getInt(ARG_OBJECT)
+            typeHabit = getInt(ARG_OBJECT)
         }
-        if (num == 0){
+        if (typeHabit == 0){
             viewModel.goodList.observe(viewLifecycleOwner, Observer { goodList ->
                 dataAdapter = DataAdapter(goodList as ArrayList<Habit>, listener)
                 binding.recyclerView.adapter = dataAdapter
