@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import com.example.trackerapp.Habit
 import com.example.trackerapp.R
 import com.example.trackerapp.adapter.ViewAdapter
-import com.example.trackerapp.databinding.FragmentFirstBinding
+import com.example.trackerapp.databinding.FragmentMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class AllHabitsFragment : Fragment() {
-    private var _binding: FragmentFirstBinding? = null
+class MainFragment : Fragment() {
+    private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewAdapter: ViewAdapter
     private var habits: ArrayList<Habit> = arrayListOf()
@@ -32,7 +32,7 @@ class AllHabitsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding =  FragmentFirstBinding.inflate(inflater, container, false)
+        _binding =  FragmentMainBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
     }
@@ -69,16 +69,21 @@ class AllHabitsFragment : Fragment() {
     }
 
     fun commitTransaction(item: Habit, position: Int) {
-        val editHabitFragment: Fragment = EditHabitFragment.newInstance(item, position)
+//        val editHabitFragment: Fragment = EditHabitFragment.newInstance(item, position)
+//        parentFragmentManager.beginTransaction()
+//            .replace(R.id.fragment_container, editHabitFragment)
+//            .addToBackStack(null).commit()
+
+        val editFragment: Fragment = EditFragment.newInstance(item, position)
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, editHabitFragment)
+            .replace(R.id.fragment_container, editFragment)
             .addToBackStack(null).commit()
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(): AllHabitsFragment {
-            val fragment = AllHabitsFragment()
+        fun newInstance(): MainFragment {
+            val fragment = MainFragment()
             val args = Bundle()
             fragment.arguments = args
             return fragment

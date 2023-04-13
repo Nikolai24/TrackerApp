@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.trackerapp.fragment.InfoFragment
-import com.example.trackerapp.fragment.AllHabitsFragment
+import com.example.trackerapp.fragment.MainFragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, AllHabitsFragment(), FIRST).commit()
+                .replace(R.id.fragment_container, MainFragment(), FIRST).commit()
             navigationView.setCheckedItem(R.id.menu_item_home)
         }
     }

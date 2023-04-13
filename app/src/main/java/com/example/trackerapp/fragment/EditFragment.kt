@@ -1,16 +1,20 @@
 package com.example.trackerapp.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.trackerapp.*
-import com.example.trackerapp.databinding.FragmentSecondBinding
+import com.example.trackerapp.databinding.FragmentEditBinding
+import com.example.trackerapp.model.SecondViewModel
 
-class EditHabitFragment: Fragment() {
-    private var _binding: FragmentSecondBinding? = null
+class EditFragment: Fragment() {
+    private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: SecondViewModel
     private var name: String = HABIT
@@ -23,6 +27,7 @@ class EditHabitFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = SecondViewModel(Singleton)
     }
 
     override fun onCreateView(
@@ -30,7 +35,7 @@ class EditHabitFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding =  FragmentSecondBinding.inflate(inflater, container, false)
+        _binding =  FragmentEditBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
     }
@@ -49,16 +54,21 @@ class EditHabitFragment: Fragment() {
         }
         binding.radioButtonGood.setOnClickListener {
             type = GOOD_HABIT
+            viewModel.type(type)
         }
         binding.radioButtonBad.setOnClickListener {
             type = BAD_HABIT
+            viewModel.type(type)
         }
         val saveButton: Button = view.findViewById(R.id.save_habit)
         val cancelButton: Button = view.findViewById(R.id.cancel)
         if (position == -1){
             item = Habit(name, description, priority, type, quantity, periodicity)
             saveButton.setOnClickListener {
-                saveHabit(item, -1, binding.spinner)
+                viewModel.priority(binding.spinner.selectedItem.toString())
+                viewModel.updateList()
+//                sendResult(item, -1, binding.spinner)
+                activity?.onBackPressed()
             }
         }
         if (position > -1){
@@ -75,16 +85,72 @@ class EditHabitFragment: Fragment() {
                 type = BAD_HABIT
                 oldType = BAD_HABIT
             }
+            var priority = ""
+            if (item.priority == HIGH){
+                binding.spinner.setSelection(0)
+                priority = HIGH
+            }
             if (item.priority == MEDIUM){
                 binding.spinner.setSelection(1)
+                priority = MEDIUM
             }
             if (item.priority == LOW){
                 binding.spinner.setSelection(2)
+                priority = LOW
             }
             saveButton.setOnClickListener {
-                saveHabit(item, position, binding.spinner)
+                viewModel.priority(binding.spinner.selectedItem.toString())
+                viewModel.updateList()
+//                sendResult(item, position, binding.spinner)
+                activity?.onBackPressed()
             }
+            viewModel.name(item.name!!)
+            viewModel.priority(priority)
+            viewModel.type(type)
+            viewModel.id(item.id!!)
         }
+        viewModel.position(position)
+        viewModel.oldType(oldType)
+        binding.nameHabit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                viewModel.name(s.toString())
+            }
+        })
+        binding.description.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                viewModel.description(s.toString())
+            }
+        })
+        binding.quantity.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                viewModel.quantity(s.toString())
+            }
+        })
+        binding.periodicity.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                viewModel.periodicity(s.toString())
+            }
+        })
 //        cancelButton.setOnClickListener {
 //            sendResult(item, -2, binding.spinner)
 //        }
@@ -95,35 +161,10 @@ class EditHabitFragment: Fragment() {
         _binding = null
     }
 
-    private fun saveHabit(habit: Habit, position: Int, spinner: Spinner) {
-        priority = spinner.selectedItem.toString()
-        habit.priority = priority
-        var text = binding.nameHabit.text.toString()
-        if (text.isNotEmpty()){
-            habit.name = text
-        }
-        text = binding.description.text.toString()
-        if (text.isNotEmpty()){
-            habit.description = text
-        }
-        text = binding.quantity.text.toString()
-        if (text.isNotEmpty()){
-            habit.quantity = text.toInt()
-        }
-        text = binding.periodicity.text.toString()
-        if (text.isNotEmpty()){
-            habit.periodicity = text.toInt()
-        }
-        habit.type = type
-//        setFragmentResult(REQUEST_KEY, bundleOf(HABIT to habit, POSITION to position))
-        viewModel = SecondViewModel(Singleton, position, habit, oldType)
-        activity?.onBackPressed()
-    }
-
     companion object {
         @JvmStatic
-        fun newInstance(item: Habit, position: Int): EditHabitFragment {
-            val fragment = EditHabitFragment()
+        fun newInstance(item: Habit, position: Int): EditFragment {
+            val fragment = EditFragment()
             val args = Bundle()
             args.putSerializable(HABIT, item)
             args.putInt(POSITION, position)

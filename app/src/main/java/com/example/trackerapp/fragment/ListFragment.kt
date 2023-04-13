@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.trackerapp.FirstViewModel
+import com.example.trackerapp.model.FirstViewModel
 import com.example.trackerapp.Habit
 import com.example.trackerapp.R
 import com.example.trackerapp.Singleton
 import com.example.trackerapp.adapter.DataAdapter
-import com.example.trackerapp.databinding.FragmentNewBinding
+import com.example.trackerapp.databinding.FragmentListBinding
 
-class RecyclerViewFragment : Fragment() {
-    private var _binding: FragmentNewBinding? = null
+class ListFragment : Fragment() {
+    private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
     private lateinit var dataAdapter: DataAdapter
     private var num = 0
@@ -37,7 +37,7 @@ class RecyclerViewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding =  FragmentNewBinding.inflate(inflater, container, false)
+        _binding =  FragmentListBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
     }
@@ -72,9 +72,14 @@ class RecyclerViewFragment : Fragment() {
     }
 
     fun commitTransaction(item: Habit, position: Int) {
-        val editHabitFragment: Fragment = EditHabitFragment.newInstance(item, position)
+//        val editHabitFragment: Fragment = EditHabitFragment.newInstance(item, position)
+//        activity?.supportFragmentManager?.beginTransaction()
+//            ?.replace(R.id.fragment_container, editHabitFragment)
+//            ?.addToBackStack(null)?.commit()
+
+        val editFragment: Fragment = EditFragment.newInstance(item, position)
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.fragment_container, editHabitFragment)
+            ?.replace(R.id.fragment_container, editFragment)
             ?.addToBackStack(null)?.commit()
     }
     companion object {

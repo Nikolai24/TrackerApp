@@ -1,8 +1,9 @@
-package com.example.trackerapp
+package com.example.trackerapp.model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.trackerapp.fragment.RecyclerViewFragment
+import com.example.trackerapp.Habit
+import com.example.trackerapp.Singleton
 
 class FirstViewModel(private val model: Singleton) {
 
@@ -16,15 +17,15 @@ class FirstViewModel(private val model: Singleton) {
         getList()
     }
     private fun getList() {
-        mutableGoodList.value = model.getGoodList()
-        mutableBadList.value = model.getBadList()
+        mutableGoodList.value = Singleton.getGoodList()
+        mutableBadList.value = Singleton.getBadList()
     }
 
     fun sort(){
-        model.sort()
+        Singleton.sort()
     }
 
     fun search(s: String){
-        model.search(s)
+        Singleton.search(s)
     }
 }
