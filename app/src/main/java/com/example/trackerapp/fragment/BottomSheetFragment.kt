@@ -6,7 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.trackerapp.FirstViewModel
+import com.example.trackerapp.model.FirstViewModel
 import com.example.trackerapp.Singleton
 import com.example.trackerapp.databinding.BottomsheetFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
