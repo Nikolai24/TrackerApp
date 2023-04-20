@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.trackerapp.*
+import com.example.trackerapp.HabitRepository
 import com.example.trackerapp.databinding.FragmentEditBinding
-import com.example.trackerapp.model.SecondViewModel
+import com.example.trackerapp.viewmodel.SecondViewModel
 
 class EditFragment: Fragment() {
     private var _binding: FragmentEditBinding? = null
@@ -27,7 +29,7 @@ class EditFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = SecondViewModel(Singleton)
+        viewModel = SecondViewModel(HabitRepository, arguments?.getInt(ID) as Int)
     }
 
     override fun onCreateView(
@@ -42,8 +44,15 @@ class EditFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var item: Habit = arguments?.getSerializable(HABIT) as Habit
         var position: Int = arguments?.getInt(POSITION) as Int
+        println("EDIT FRAGMENT")
+        var item = Habit()
+        viewModel.habit.observe(viewLifecycleOwner, Observer { habit ->
+            item = habit!!
+            println(item)
+        })
+        item = HabitRepository.getHabit( arguments?.getInt(ID) as Int)
+
         ArrayAdapter.createFromResource(
             requireContext(),
             R.array.priorities_array,
@@ -107,7 +116,7 @@ class EditFragment: Fragment() {
             viewModel.name(item.name!!)
             viewModel.priority(priority)
             viewModel.type(type)
-            viewModel.id(item.id!!)
+//            viewModel.id(item.id!!)
         }
         viewModel.position(position)
         viewModel.oldType(oldType)
@@ -163,15 +172,16 @@ class EditFragment: Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(item: Habit, position: Int): EditFragment {
+        fun newInstance(id: Int, position: Int): EditFragment {
             val fragment = EditFragment()
             val args = Bundle()
-            args.putSerializable(HABIT, item)
+            args.putInt(ID, id)
             args.putInt(POSITION, position)
             fragment.arguments = args
             return fragment
         }
         private const val HABIT = "Habit"
+        private const val ID = "ID"
         private const val DESCRIPTION = ""
         private const val GOOD_HABIT = "Good habit"
         private const val BAD_HABIT = "Bad habit"

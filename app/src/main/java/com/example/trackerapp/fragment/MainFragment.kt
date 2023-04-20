@@ -48,9 +48,9 @@ class MainFragment : Fragment() {
             }
         }.attach()
         binding.fab.setOnClickListener {
-            val habit = Habit()
+            val id = -1
             val position = -1
-            commitTransaction(habit, position)
+            commitTransaction(id, position)
         }
         val bottomSheetFragment = BottomSheetFragment()
         binding.filter.setOnClickListener {
@@ -68,13 +68,8 @@ class MainFragment : Fragment() {
         super.onSaveInstanceState(outState)
     }
 
-    fun commitTransaction(item: Habit, position: Int) {
-//        val editHabitFragment: Fragment = EditHabitFragment.newInstance(item, position)
-//        parentFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, editHabitFragment)
-//            .addToBackStack(null).commit()
-
-        val editFragment: Fragment = EditFragment.newInstance(item, position)
+    fun commitTransaction(id: Int, position: Int) {
+        val editFragment: Fragment = EditFragment.newInstance(id, position)
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, editFragment)
             .addToBackStack(null).commit()

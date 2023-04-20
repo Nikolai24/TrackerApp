@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.trackerapp.model.FirstViewModel
+import com.example.trackerapp.viewmodel.FirstViewModel
 import com.example.trackerapp.Habit
 import com.example.trackerapp.R
-import com.example.trackerapp.Singleton
+import com.example.trackerapp.HabitRepository
 import com.example.trackerapp.adapter.DataAdapter
 import com.example.trackerapp.databinding.FragmentListBinding
 
@@ -18,7 +18,7 @@ class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
     private lateinit var dataAdapter: DataAdapter
-    private var num = 0
+    private var typeHabit = 0
     private lateinit var viewModel: FirstViewModel
 
     private val listener: DataAdapter.OnItemClickListener = object: DataAdapter.OnItemClickListener{
@@ -29,7 +29,7 @@ class ListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = FirstViewModel(Singleton)
+        viewModel = FirstViewModel(HabitRepository)
     }
 
     override fun onCreateView(
@@ -44,9 +44,9 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            num = getInt(ARG_OBJECT)
+            typeHabit = getInt(ARG_OBJECT)
         }
-        if (num == 0){
+        if (typeHabit == 0){
             viewModel.goodList.observe(viewLifecycleOwner, Observer { goodList ->
                 dataAdapter = DataAdapter(goodList as ArrayList<Habit>, listener)
                 binding.recyclerView.adapter = dataAdapter
@@ -76,8 +76,8 @@ class ListFragment : Fragment() {
 //        activity?.supportFragmentManager?.beginTransaction()
 //            ?.replace(R.id.fragment_container, editHabitFragment)
 //            ?.addToBackStack(null)?.commit()
-
-        val editFragment: Fragment = EditFragment.newInstance(item, position)
+        var id = item.id ?: -1
+        val editFragment: Fragment = EditFragment.newInstance(id, position)
         activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.fragment_container, editFragment)
             ?.addToBackStack(null)?.commit()

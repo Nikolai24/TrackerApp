@@ -6,8 +6,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.trackerapp.FirstViewModel
-import com.example.trackerapp.Singleton
+import com.example.trackerapp.viewmodel.FirstViewModel
+import com.example.trackerapp.HabitRepository
 import com.example.trackerapp.databinding.BottomsheetFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -18,7 +18,7 @@ class BottomSheetFragment: BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = FirstViewModel(Singleton)
+        viewModel = FirstViewModel(HabitRepository)
     }
 
     override fun onCreateView(
