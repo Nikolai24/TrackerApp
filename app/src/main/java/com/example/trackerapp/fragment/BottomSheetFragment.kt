@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.trackerapp.viewmodel.FirstViewModel
 import com.example.trackerapp.HabitRepository
+import com.example.trackerapp.database.HabitRoomDatabase
 import com.example.trackerapp.databinding.BottomsheetFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -18,7 +19,7 @@ class BottomSheetFragment: BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = FirstViewModel(HabitRepository)
+        viewModel = FirstViewModel(HabitRepository(HabitRoomDatabase.getDatabase(requireContext()).habitDao()))
     }
 
     override fun onCreateView(

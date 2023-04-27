@@ -13,6 +13,7 @@ data class Habit(
     @ColumnInfo var type: String? = null,
     @ColumnInfo var quantity: Int? = null,
     @ColumnInfo var periodicity: Int? = null,
-    @ColumnInfo var color: Int? = null
-): Serializable
-{@PrimaryKey(autoGenerate = true) var id: Int? = null}
+    @ColumnInfo var color: Int? = null,
+) {
+    @PrimaryKey(autoGenerate = true) var id: Int? = null
+}

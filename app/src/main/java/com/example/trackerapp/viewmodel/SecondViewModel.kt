@@ -10,7 +10,7 @@ class SecondViewModel(private val model: HabitRepository, var id: Int) {
     private var mutableHabit: MutableLiveData<Habit?> = MutableLiveData()
     var habit: LiveData<Habit?> = mutableHabit
     var position = -1
-    var newHabit = Habit("Habit", "", "High", "Good habit", 0, 0, 0, id)
+    var newHabit = Habit("Habit", "", "High", "Good habit", 0, 0, 0)
     var oldType = "Good habit"
 
     init {
@@ -22,11 +22,11 @@ class SecondViewModel(private val model: HabitRepository, var id: Int) {
     }
 
     fun updateList() {
-        if (position == -1) {
-            HabitRepository.addHabit(newHabit)
+        if (id == -1) {
+            model.addHabit(newHabit)
         }
-        if (position > -1) {
-            HabitRepository.changeHabit(position, newHabit)
+        if (id > -1) {
+            model.changeHabit(id, newHabit)
         }
     }
 
@@ -39,11 +39,19 @@ class SecondViewModel(private val model: HabitRepository, var id: Int) {
     }
 
     fun quantity(s: String){
-        newHabit.quantity = s.toInt()
+        if (s == ""){
+            newHabit.quantity = 0
+        } else {
+            newHabit.quantity = s.toInt()
+        }
     }
 
     fun periodicity(s: String){
-        newHabit.periodicity = s.toInt()
+        if (s == ""){
+            newHabit.periodicity = 0
+        } else {
+            newHabit.periodicity = s.toInt()
+        }
     }
 
     fun priority(s: String){

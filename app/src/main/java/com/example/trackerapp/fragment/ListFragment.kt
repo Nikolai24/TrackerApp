@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.room.Room
 import com.example.trackerapp.viewmodel.FirstViewModel
 import com.example.trackerapp.Habit
 import com.example.trackerapp.R
 import com.example.trackerapp.HabitRepository
 import com.example.trackerapp.adapter.DataAdapter
+import com.example.trackerapp.database.HabitRoomDatabase
 import com.example.trackerapp.databinding.FragmentListBinding
 
 class ListFragment : Fragment() {
@@ -29,7 +32,7 @@ class ListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = FirstViewModel(HabitRepository)
+        viewModel = FirstViewModel(HabitRepository(HabitRoomDatabase.getDatabase(requireContext()).habitDao()))
     }
 
     override fun onCreateView(
@@ -46,16 +49,33 @@ class ListFragment : Fragment() {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             typeHabit = getInt(ARG_OBJECT)
         }
+        val db = HabitRoomDatabase.getDatabase(requireContext()).habitDao()
         if (typeHabit == 0){
-            viewModel.goodList.observe(viewLifecycleOwner, Observer { goodList ->
-                dataAdapter = DataAdapter(goodList as ArrayList<Habit>, listener)
+
+            val habitsLiveData: LiveData<List<Habit>> = db.getByType(GOOD_HABIT)
+//            val habitsLiveData: LiveData<List<Habit>> = db.getAll()
+            habitsLiveData.observe(viewLifecycleOwner, Observer { habits ->
+                dataAdapter = DataAdapter(habits as ArrayList<Habit>, listener)
                 binding.recyclerView.adapter = dataAdapter
             })
+//
+//            viewModel.goodList.observe(viewLifecycleOwner, Observer { goodList ->
+//                dataAdapter = DataAdapter(goodList as ArrayList<Habit>, listener)
+//                binding.recyclerView.adapter = dataAdapter
+//            })
         } else {
-            viewModel.badList.observe(viewLifecycleOwner, Observer { badList ->
-                dataAdapter = DataAdapter(badList as ArrayList<Habit>, listener)
+
+            val habitsLiveData: LiveData<List<Habit>> = db.getByType(BAD_HABIT)
+//            val habitsLiveData: LiveData<List<Habit>> = db.getAll()
+            habitsLiveData.observe(viewLifecycleOwner, Observer { habits ->
+                dataAdapter = DataAdapter(habits as ArrayList<Habit>, listener)
                 binding.recyclerView.adapter = dataAdapter
             })
+
+//            viewModel.badList.observe(viewLifecycleOwner, Observer { badList ->
+//                dataAdapter = DataAdapter(badList as ArrayList<Habit>, listener)
+//                binding.recyclerView.adapter = dataAdapter
+//            })
         }
         val lManager =
             StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)

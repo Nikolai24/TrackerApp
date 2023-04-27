@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.trackerapp.*
 import com.example.trackerapp.HabitRepository
+import com.example.trackerapp.database.HabitRoomDatabase
 import com.example.trackerapp.databinding.FragmentEditBinding
 import com.example.trackerapp.viewmodel.SecondViewModel
 
@@ -29,7 +30,7 @@ class EditFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = SecondViewModel(HabitRepository, arguments?.getInt(ID) as Int)
+        viewModel = SecondViewModel(HabitRepository(HabitRoomDatabase.getDatabase(requireContext()).habitDao()), arguments?.getInt(ID) as Int)
     }
 
     override fun onCreateView(
@@ -47,11 +48,12 @@ class EditFragment: Fragment() {
         var position: Int = arguments?.getInt(POSITION) as Int
         println("EDIT FRAGMENT")
         var item = Habit()
-        viewModel.habit.observe(viewLifecycleOwner, Observer { habit ->
-            item = habit!!
-            println(item)
-        })
-        item = HabitRepository.getHabit( arguments?.getInt(ID) as Int)
+//        viewModel.habit.observe(viewLifecycleOwner, Observer { habit ->
+//            item = habit!!
+//            println(item)
+//        })
+        val db = HabitRoomDatabase.getDatabase(requireContext()).habitDao()
+        item = db.findByID( arguments?.getInt(ID) as Int)
 
         ArrayAdapter.createFromResource(
             requireContext(),
@@ -84,7 +86,9 @@ class EditFragment: Fragment() {
             binding.nameHabit.setText(item.name)
             binding.description.setText(item.description)
             binding.quantity.setText(item.quantity!!.toString())
+            viewModel.quantity(item.quantity!!.toString())
             binding.periodicity.setText(item.periodicity!!.toString())
+            viewModel.periodicity(item.periodicity!!.toString())
             if (item.type == GOOD_HABIT){
                 binding.radioGroup.check(R.id.radioButtonGood)
                 type = GOOD_HABIT
