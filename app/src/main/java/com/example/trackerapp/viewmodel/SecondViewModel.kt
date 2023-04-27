@@ -4,6 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.trackerapp.Habit
 import com.example.trackerapp.HabitRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class SecondViewModel(private val model: HabitRepository, var id: Int) {
 
@@ -22,6 +26,16 @@ class SecondViewModel(private val model: HabitRepository, var id: Int) {
     }
 
     fun updateList() {
+//        val job: Job = GlobalScope.launch(Dispatchers.IO) {
+//            if (id == -1) {
+//                model.addHabit(newHabit)
+//            }
+//            if (id > -1) {
+//                model.changeHabit(id, newHabit)
+//            }
+//        }
+//        job.start()
+
         if (id == -1) {
             model.addHabit(newHabit)
         }

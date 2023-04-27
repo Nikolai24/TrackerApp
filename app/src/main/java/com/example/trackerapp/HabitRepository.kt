@@ -7,6 +7,10 @@ import com.example.trackerapp.database.HabitDao
 import com.example.trackerapp.database.HabitRoomDatabase
 import android.content.Context
 import androidx.annotation.WorkerThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class HabitRepository(private val habitDao: HabitDao) {
     private var habits: LiveData<List<Habit>> = MutableLiveData()
@@ -35,13 +39,15 @@ class HabitRepository(private val habitDao: HabitDao) {
         habits = habitDao.getAll()
         return habits
     }
-
     fun addHabit(habit: Habit) {
-        habitDao.insertAll(habit)
+        val job: Job = GlobalScope.launch(Dispatchers.IO) {
+            habitDao.insertAll(habit)
+        }
+        job.start()
+//        habitDao.insertAll(habit)
 //        habit.id = habits.size
 //        habits.add(habit)
     }
-
     fun changeHabit(id:Int, newHabit: Habit) {
         newHabit.id = id
         habitDao.update(newHabit)

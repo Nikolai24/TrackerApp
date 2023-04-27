@@ -13,7 +13,6 @@ interface HabitDao {
     @Query("SELECT * FROM habit_table WHERE type LIKE :type")
     fun getByType(type: String): LiveData<List<Habit>>
 
-
     @Insert
     fun insertAll(vararg habit: Habit)
 
