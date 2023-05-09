@@ -14,7 +14,7 @@ interface HabitDao {
     fun getByType(type: String): LiveData<List<Habit>>
 
     @Insert
-    fun insertAll(vararg habit: Habit)
+    suspend fun insertAll(vararg habit: Habit)
 
     @Query("SELECT * FROM habit_table WHERE id LIKE :id LIMIT 1")
     fun findByID(id: Int): Habit

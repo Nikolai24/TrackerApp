@@ -46,6 +46,9 @@ class ListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        var list = mutableListOf<Habit>()
+        dataAdapter = DataAdapter(list as ArrayList<Habit>, listener)
+        binding.recyclerView.adapter = dataAdapter
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             typeHabit = getInt(ARG_OBJECT)
         }
@@ -55,8 +58,9 @@ class ListFragment : Fragment() {
             val habitsLiveData: LiveData<List<Habit>> = db.getByType(GOOD_HABIT)
 //            val habitsLiveData: LiveData<List<Habit>> = db.getAll()
             habitsLiveData.observe(viewLifecycleOwner, Observer { habits ->
-                dataAdapter = DataAdapter(habits as ArrayList<Habit>, listener)
-                binding.recyclerView.adapter = dataAdapter
+                dataAdapter.setHabits(habits as ArrayList<Habit>)
+//                dataAdapter = DataAdapter(habits as ArrayList<Habit>, listener)
+//                binding.recyclerView.adapter = dataAdapter
             })
 //
 //            viewModel.goodList.observe(viewLifecycleOwner, Observer { goodList ->
@@ -68,8 +72,9 @@ class ListFragment : Fragment() {
             val habitsLiveData: LiveData<List<Habit>> = db.getByType(BAD_HABIT)
 //            val habitsLiveData: LiveData<List<Habit>> = db.getAll()
             habitsLiveData.observe(viewLifecycleOwner, Observer { habits ->
-                dataAdapter = DataAdapter(habits as ArrayList<Habit>, listener)
-                binding.recyclerView.adapter = dataAdapter
+                dataAdapter.setHabits(habits as ArrayList<Habit>)
+//                dataAdapter = DataAdapter(habits as ArrayList<Habit>, listener)
+//                binding.recyclerView.adapter = dataAdapter
             })
 
 //            viewModel.badList.observe(viewLifecycleOwner, Observer { badList ->

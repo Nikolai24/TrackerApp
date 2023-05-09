@@ -43,7 +43,7 @@ class HabitRepository(private val habitDao: HabitDao) {
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
             habitDao.insertAll(habit)
         }
-        job.start()
+//        job.start()
 //        habitDao.insertAll(habit)
 //        habit.id = habits.size
 //        habits.add(habit)
